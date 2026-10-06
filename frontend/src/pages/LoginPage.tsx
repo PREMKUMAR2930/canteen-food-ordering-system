@@ -111,6 +111,34 @@ export const LoginPage: React.FC = () => {
         )}
 
         <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
+          {/* Quick Demo Fill Helper */}
+          <div className="p-3 bg-slate-50 border border-dashed border-slate-300 rounded-xl flex items-center justify-between text-xs">
+            <div>
+              <p className="font-semibold text-slate-700">
+                {activeRole === 'ADMIN' ? '🔑 Admin Demo:' : '🎓 Student Demo:'}
+              </p>
+              <p className="text-[11px] text-slate-500 font-mono">
+                {activeRole === 'ADMIN' ? 'admin@canteen.com / admin123' : 'student@canteen.com / student123'}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                if (activeRole === 'ADMIN') {
+                  setEmail('admin@canteen.com');
+                  setPassword('admin123');
+                } else {
+                  setEmail('student@canteen.com');
+                  setPassword('student123');
+                }
+                setError(null);
+              }}
+              className="px-2.5 py-1.5 bg-orange-100 hover:bg-orange-200 text-orange-700 font-bold rounded-lg text-xs transition-colors"
+            >
+              Auto Fill
+            </button>
+          </div>
+
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
               {activeRole === 'ADMIN' ? 'Admin Email Address' : 'College Email Address'}
@@ -122,7 +150,7 @@ export const LoginPage: React.FC = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={activeRole === 'ADMIN' ? 'admin@college.edu' : 'student@college.edu'}
+                placeholder={activeRole === 'ADMIN' ? 'admin@canteen.com' : 'student@canteen.com'}
                 className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all"
               />
             </div>
