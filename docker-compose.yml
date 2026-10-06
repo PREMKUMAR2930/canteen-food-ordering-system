@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # MySQL 8 Database
+  canteen-db:
+    image: mysql:8.0
+    container_name: canteen-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: canteen_db
+      MYSQL_USER: canteen_user
+      MYSQL_PASSWORD: canteen_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - canteen_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Backend API
+  canteen-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: canteen-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:mysql://canteen-db:3306/canteen_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: canteen_user
+      SPRING_DATASOURCE_PASSWORD: canteen_password
+      APP_JWT_SECRET: canteenSecretKeyForCollegeFoodOrderingSystem2026SecureKeyWith256BitsMinimumLength
+      APP_CORS_ALLOWED_ORIGINS: http://localhost,http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173
+    depends_on:
+      canteen-db:
+        condition: service_healthy
+
+  # React Frontend (Vite + Nginx)
+  canteen-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:8080/api
+    container_name: canteen-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - canteen-backend
+
+volumes:
+  canteen_db_data:
