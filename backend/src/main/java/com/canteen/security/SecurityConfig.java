@@ -87,9 +87,9 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/foods/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/foods/**", "/foods/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/categories/**", "/categories/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
